@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Treatment Code Checker</title>
+</head>
+<body>
+    <h2>Select or Search Treatment Code</h2>
+
+    <select id="codeSelect">
+        <option value="">-- Select a Code --</option>
+        {% for code, name in codes %}
+        <option value="{{ code }}">{{ code }} - {{ name }}</option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <input type="text" id="codeInput" placeholder="Type code (e.g. 8101)">
+    <ul id="suggestions" style="list-style:none;"></ul>
+
+    <br><br>
+
+    <button onclick="verify()">Verify</button>
+
+    <h3 id="result"></h3>
+
+    <a href="/add">➕ Add New Treatment</a>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
