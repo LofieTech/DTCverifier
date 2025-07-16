@@ -1,15 +1,14 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import psycopg2
+import os
 
 app = Flask(__name__)
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="treatment_code_app",
-    user="postgres",
-    password="lUcky1983$"
-)
+# Get database connection string from environment variable
+DATABASE_URL = os.environ.get('DATABASE_URL')
+conn = psycopg2.connect(DATABASE_URL)
 
+# HOME PAGE
 @app.route('/')
 def index():
     cur = conn.cursor()
@@ -18,6 +17,7 @@ def index():
     cur.close()
     return render_template('index.html', codes=codes)
 
+# VERIFY CODE
 @app.route('/verify', methods=['POST'])
 def verify_code():
     try:
@@ -35,6 +35,7 @@ def verify_code():
     else:
         return jsonify({"status": "invalid", "description": "Code not found"})
 
+# SEARCH
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('term', '')
@@ -44,6 +45,7 @@ def search():
     cur.close()
     return jsonify([{"code": row[0], "name": row[1]} for row in results])
 
+# ADD TREATMENT
 @app.route('/add', methods=['GET', 'POST'])
 def add_treatment():
     if request.method == 'POST':
@@ -58,5 +60,6 @@ def add_treatment():
         return redirect(url_for('index'))
     return render_template('add.html')
 
+# RUN SERVER
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
